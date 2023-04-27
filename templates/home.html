@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Concordance, POS Tagger, and Sentiment Analyser for Spanish Corpus</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <h1>Concordance, POS Tagger, and Sentiment Analyser for Spanish Corpus</h1>
+        <div class="container">
+            <div class="center">
+                <button class="btn" type="button" onclick="window.location.href='{{ url_for('join') }}';">Add a csv to database</button><br/>
+                <br/>
+                <button class="btn" type="button" onclick="window.location.href='{{ url_for('songs') }}';">Check song list</button>
+            </div>
+        </div>
+        <div class ="row">
+          <h1>Sentiment Counts</h1>
+            {% for city, sc in zip(places,scs) %}
+            <div class ="fourth">
+                <h2>{{ city }}</h2>
+                  <table>
+                    <tr>
+                      <th>Sentiment</th>
+                      <th>Count</th>
+                    </tr>
+                    {% for sent,sc in sc.items() %}
+                    <tr>
+                      <td>{{ sent }}</td>
+                      <td>{{ sc }}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+            </div> 
+            {% endfor %}
+        <div class ="row">
+          <h1>Word Counts</h1>
+            {% for city, wc in zip(places,wcs) %}
+            <div class ="fourth">
+                <h2>{{ city }}</h2>
+                  <table>
+                    <tr>
+                      <th>Word</th>
+                      <th>Count</th>
+                    </tr>
+                    {% for word,wc in wc.items() %}
+                    <tr>
+                      <td>{{ word }}</td>
+                      <td>{{ wc }}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+            </div> 
+            {% endfor %}
+        </div>
+        </div>
+    </body>
+</html>

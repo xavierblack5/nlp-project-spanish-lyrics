@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Song List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="center">
+        <button class="btn" type="button" onclick="window.location.href='{{ url_for('home') }}';">Home</button><br/>
+      </div>
+    </div>
+
+  
+    <label for="places">Places</label>
+    <label for="search">Search</label>
+    <form class="form">
+      <div class="form__group">
+        <select id="places" name="places" data-dropdown>
+          <option value>All</option>
+          {% for city in places %}
+          <option value="{{city}}">{{ city }}</option>
+          {% endfor %}
+        </select>
+        <input id="search" id='myInput' onkeyup='searchTable()' type='text'>
+      </div>
+    </form>
+
+    <form action="{{ url_for('song') }}">
+      <table class="table">
+        <tr>
+          {% for col in column_names %}
+          <th>{{col}}</th>
+          {% endfor %}
+        </tr>
+        <tbody id="myTable">
+        </tbody>
+      </table>
+    </form>
+    
+  </body>
+  <script type="text/javascript">
+  function buildTable(data) {
+    const table = document.getElementById('myTable')
+    table.innerHTML = data.map(row => {
+    let [Index,	File,	Name,	Singer,	Place,	Year,	Genre,	LyricNumber,	Composer,	Sex,	Sentiment_Output,	Sentiment_Neg_Probability,	Sentiment_Neu_Probability,	Sentiment_Pos_Probability] = row;
+    return `<tr>
+              <td>${Index}</td>
+              <td>${File}</td>
+              <td><button type="submit" value="${Name}" name="name">${Name}</button></td>
+              <td>${Singer}</td>
+              <td>${Place}</td>
+              <td>${Year}</td>
+              <td>${Genre}</td>
+              <td>${LyricNumber}</td>
+              <td>${Composer}</td>
+              <td>${Sex}</td>
+              <td>${Sentiment_Output}</td>
+              <td>${Sentiment_Neg_Probability}</td>
+              <td>${Sentiment_Neu_Probability}</td>
+              <td>${Sentiment_Pos_Probability}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    const data = {{ df|tojson }};
+    const countrySelector = document.getElementById('places');
+    countrySelector.addEventListener('change', evt => {
+      const value = evt.target.value;
+      if (value) {
+        buildTable(data.filter(row => {
+          let [Index,	File,	Name,	Singer,	Place,	Year,	Genre,	LyricNumber,	Composer,	Sex,	Sentiment_Output,	Sentiment_Neg_Probability,	Sentiment_Neu_Probability,	Sentiment_Pos_Probability] = row;
+          return Place === value
+        }));
+      } else {
+        buildTable(data);
+      }
+    });
+
+    buildTable(data)
+    
+    function searchTable() {
+    var input, filter, found, table, tr, td, i, j;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+          if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            found = true;
+          }
+        }
+        if (found) {
+          tr[i].style.display = "";
+          found = false;
+        } else {
+          tr[i].style.display = "none";
+        }
+}
+}
+
+  </script>
+</html>
